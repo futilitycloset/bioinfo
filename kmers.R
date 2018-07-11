@@ -33,4 +33,19 @@ PatternCount2 <- function(text, pattern){
 PatternCount2("GCGCGGGATATATTA", "GCG")
 
 text <- "GCGCGGGATATATTA"
-substr(text, 1, 5)
+substr(text, 2, 5)
+
+
+
+Pattern2 <- function(text, pattern){
+  pattern_length <- nchar(pattern)
+  text_length <- nchar(text)
+  look_length <- nchar(text) - nchar(pattern)
+  for (i in 1:look_length){
+    end_pos <- i + pattern_length
+    test_text <- substr(text, i, end_pos-1)
+    print(test_text)
+  }
+}
+
+Pattern2("GCGCGGGATATATTA", "GCG")
