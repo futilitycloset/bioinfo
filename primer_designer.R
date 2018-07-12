@@ -140,3 +140,24 @@ reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
 }
 
 reverse_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
+
+#returns complement of given base
+complement <- function(nuc){
+  nuc <- toupper(nuc)
+
+  if (nuc == "A"){
+    return("T")
+  }
+  if (nuc == "T"){
+    return("A")
+  }
+  if (nuc == "G"){
+    return("C")
+  }
+  if (nuc == "C"){
+    return("G")
+  }
+  else {
+    return("Invalid base. Enter A, G, C, or T.")
+  }
+}
