@@ -39,7 +39,6 @@ forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
  next_place <- nchar(forward_nucs) + 1
 
  while (for_melt_temp < low_melt_temp){
-
    if (substr(gene, next_place, next_place) == "A" | substr(gene, next_place, next_place) == "a"){
      for_melt_temp <- for_melt_temp + 2
      forward_primer <- paste0(forward_primer, "T")
@@ -59,9 +58,10 @@ forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
    next_place <- next_place + 1
  }
 
- print(forward_primer)
+ print(c("forward: ", forward_primer))
  print(nchar(forward_primer))
  print(for_melt_temp)
+
 }
 
 forward_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
@@ -110,10 +110,9 @@ reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
     }
   }
 
-  next_place <- nchar(forward_nucs) - primer_length + 1
+  next_place <- nchar(reverse_nucs) - primer_length + 1
 
   while (rev_melt_temp < low_melt_temp){
-
     if (substr(gene, next_place, next_place) == "A" | substr(gene, next_place, next_place) == "a"){
       rev_melt_temp <- rev_melt_temp + 2
       reverse_primer <- paste0(reverse_primer, "T")
@@ -130,14 +129,14 @@ reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
       rev_melt_temp <- rev_melt_temp + 4
       reverse_primer <- paste0(reverse_primer, "G")
     }
-    next_place <- next_place - 1
+    next_place <- next_place + 1
   }
 
-  print(c("forward: ", forward_primer))
-  print(nchar(forward_primer))
-  print(for_melt_temp)
+  reverse_primer <-
 
   print(c("reverse: ", reverse_primer))
-  print(nchar(forward_primer))
-  print(for_melt_temp)
+  print(nchar(reverse_primer))
+  print(rev_melt_temp)
 }
+
+reverse_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
