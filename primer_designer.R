@@ -132,7 +132,7 @@ reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
     next_place <- next_place + 1
   }
 
-  reverse_primer <-
+  reverse_primer <- paste(rev(substring(reverse_primer,1:nchar(reverse_primer),1:nchar(reverse_primer))),collapse="")
 
   print(c("reverse: ", reverse_primer))
   print(nchar(reverse_primer))
@@ -140,4 +140,3 @@ reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
 }
 
 reverse_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
-print()
