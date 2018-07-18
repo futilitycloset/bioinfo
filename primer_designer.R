@@ -19,7 +19,7 @@ complement <- function(nuc){
   }
 }
 
-#designs forward primer, and adjusts length based on melting temperature
+#designs forward primer, and increases length if melting temperature is too low
 forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_temp){
  gene_length <- nchar(gene)
 
@@ -88,14 +88,7 @@ forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
 
 }
 
-forward_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
-
-forward_primer_design("AAAGAGAGAGAGAGAGAGACCCCCCACACACACACCACATATTATAGA", 18, 55, 60)
-nchar("AAAGAGAGAGAGAGAGAG")
-gene <- "AAAGAGAGAGAGAGAGAGACCCCCCACACACACACCACATATTATAGA"
-paste(gene, "t", sep = "")
-
-#designs forward primer, and adjusts length based on melting temperature
+#designs reverse primer, and increases length if melting temperature is too low
 reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_temp){
 
   reversed_gene <- paste(rev(substring(gene,1:nchar(gene),1:nchar(gene))),collapse="")
@@ -105,9 +98,7 @@ reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
 
   print(c("reverse: ", correct_reverse_primer))
   print(nchar(correct_reverse_primer))
-  print(rev_melt_temp)
 }
 
+forward_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
 reverse_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
-
-
