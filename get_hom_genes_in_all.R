@@ -21,3 +21,5 @@ nrow(liz_aoa_exclusive)
 length(intersect(donne_fplc$V1, liz_aoa_exclusive$V1))
 length(intersect(liz_aane$V1, liz_aoa_exclusive$V1))
 length(intersect(donne_fplc$V1, liz_aane$V1))
+
+intersect(donne_fplc$V1, liz_aoa_exclusive$V1)
