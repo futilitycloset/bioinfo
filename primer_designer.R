@@ -80,11 +80,12 @@ forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
    next_place <- next_place + 1
  }
 
- return(forward_primer)
- return(for_melt_temp)
- print(c("forward: ", forward_primer))
- print(nchar(forward_primer))
- print(for_melt_temp)
+ #print(c("forward: ", forward_primer))
+ #print(nchar(forward_primer))
+ #print(for_melt_temp)
+ for_melt_temp <- as.numeric(for_melt_temp)
+ for_results <- data.frame(c(forward_primer = forward_primer, melt_temp = for_melt_temp, primer_length = nchar(forward_primer)))
+ return(for_results)
 
 }
 
@@ -92,13 +93,26 @@ forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
 reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_temp){
 
   reversed_gene <- paste(rev(substring(gene,1:nchar(gene),1:nchar(gene))),collapse="")
-  proto_reverse_primer <- forward_primer_design(reversed_gene, primer_length, low_melt_temp, high_melt_temp)
+  proto_reverse_results <- as.data.frame(forward_primer_design(reversed_gene, primer_length, low_melt_temp, high_melt_temp))
 
+  reverse_temp <- as.character(proto_reverse_results[2,])
+  proto_reverse_primer <- as.character(proto_reverse_results[1,])
   correct_reverse_primer <- paste(rev(substring(proto_reverse_primer,1:nchar(proto_reverse_primer),1:nchar(proto_reverse_primer))),collapse="")
 
-  print(c("reverse: ", correct_reverse_primer))
-  print(nchar(correct_reverse_primer))
+  reverse_temp <- as.numeric(reverse_temp)
+  rev_results <- data.frame(rbind(reverse_primer = as.character(correct_reverse_primer), melt_temp = reverse_temp, primer_length = nchar(correct_reverse_primer)))
+  return(rev_results)
 }
 
-forward_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
-reverse_primer_design("ttggttaagataagaacccatgtatatataaagggcaaggttcaaggtgtgtactttagacagaatatgcgtaatatagcaaggaagtacaatgtaaacggatgggttaagaaccttaaggatggaagagtagaagctgtacttgaaggtgatgaggatgctgtacatcaagtcatagagtggtgccatataggtcctgctggtgctagggttgatgacgttgatgttgtttatgaagagtacaagggtgagtttaactcatttgatataatatattaa", 18, 55, 60)
+both_primers_design <- function(gene, primer_length, low_melt_temp, high_melt_temp){
+  forward_results <- forward_primer_design(gene, primer_length, low_melt_temp, high_melt_temp)
+  reverse_results <- reverse_primer_design(gene, primer_length, low_melt_temp, high_melt_temp)
+
+  both_results <- cbind(forward_results, reverse_results)
+  row.names(both_results) <- c("primer", "melt_temp", "primer_length")
+  colnames(both_results) <- c("forward", "reverse")
+  return(both_results)
+}
+
+test_seq <- both_primers_design("atgattatgataaatagtaatgataataacataaataatattaaagatgcaagttatgcaatatgctatgcagataagatgctaaaggataatgatatagatcctatagttgctgatattcttaatagggcattatcgttcaaggatataggtgtgaaggatgctgtagaactatttgaatgcagcaaagattcacttaaggcattaattgcaacagcagatgcgttaaggaaggttagtgtaggtgatgtagtaacatatgtagttaatagaaatataaacttcacaaatgtgtgtataaagcgttgtggattctgtgcattctcaagggactttagagaggaagagggttatctattgcctatagaagagatagtaaggagagcaaaggaagcatacgtctttggggctactgaggtatgcatacaggcagggttgatgccaaagatggatggctatctttacattgatatatgcagagcaattaagaaggagttgccagacatgcatatacatgcattctcaccagaggaggtaatgtatggcgcattaagggcaaatatgagcatagaggattaccttaaggcattaaaggatgcagggttaaacagcatccctggtacagccgctgagattcttgtacagagggtaaggaacataatatccccaggtaggataaaggttaaggactggataagagttataaagactgcacataggttagggataccatctactgcaactataatgtatgggcatattgagaactctctacataaggcagtacatctaaaacttataagagatattcagatggagactcatgggttcacagagtttgtacccttaagctttgtatacagagaggcaccaatgtataagcatagactggttaatggtttaagagaaggtgcaaatagggaagaagtgcttaagatgcatgctatagcaagggtaatgttaaataactatataaagaatatccaagtctcttgggttaaagaaggcatagagtttgctaaggatttgcttaatgctggtgcaaatgatcttggtggtacattaataaatgagagcatatctactgctgcaggtgcaaggaatgggcaactaattagacctagggagttaaggagtgctataaggagcataggtaggatacctgctcaaagagacacattatacaagagtataagggtatttgagtcatatgagcctgaggatccattggataaggttactgatacatctatctttggttcatacaacgaacttattaggcttaagaggtttagatatagatctagttag", 18, 55, 60)
+test_seq
