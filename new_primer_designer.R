@@ -3,16 +3,16 @@ complement <- function(nuc){
   nuc <- toupper(nuc)
 
   if (nuc == "A"){
-    return("T")
+    return("t")
   }
   if (nuc == "T"){
-    return("A")
+    return("a")
   }
   if (nuc == "G"){
-    return("C")
+    return("c")
   }
   if (nuc == "C"){
-    return("G")
+    return("g")
   }
   else {
     return("Invalid base. Enter A, G, C, or T.")
@@ -23,23 +23,7 @@ complement <- function(nuc){
 forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_temp){
   gene_length <- nchar(gene)
 
-  forward_nucs <- substr(gene, 1, primer_length)
-  forward_primer <- ("")
-
-  for (i in 1:nchar(forward_nucs)) {
-    if (substr(forward_nucs, i, i) == "A" | substr(forward_nucs, i, i) == "a"){
-      forward_primer <- paste0(forward_primer, "T")
-    }
-    if (substr(forward_nucs, i, i) == "T" | substr(forward_nucs, i, i) == "t"){
-      forward_primer <- paste0(forward_primer, "A")
-    }
-    if (substr(forward_nucs, i, i) == "G" | substr(forward_nucs, i, i) == "g"){
-      forward_primer <- paste0(forward_primer, "C")
-    }
-    if (substr(forward_nucs, i, i) == "C" | substr(forward_nucs, i, i) == "c"){
-      forward_primer <- paste0(forward_primer, "G")
-    }
-  }
+  forward_primer <- substr(gene, 1, primer_length)
 
   for_melt_temp <- 0
 
@@ -58,38 +42,34 @@ forward_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
     }
   }
 
-  next_place <- nchar(forward_nucs) + 1
+  next_place <- nchar(forward_primer) + 1
 
   while (for_melt_temp < low_melt_temp){
     if (substr(gene, next_place, next_place) == "A" | substr(gene, next_place, next_place) == "a"){
       for_melt_temp <- for_melt_temp + 2
-      forward_primer <- paste0(forward_primer, "T")
+      forward_primer <- paste0(forward_primer, "a")
     }
     if (substr(gene, next_place, next_place) == "T" | substr(gene, next_place, next_place) == "t"){
       for_melt_temp <- for_melt_temp + 2
-      forward_primer <- paste0(forward_primer, "A")
+      forward_primer <- paste0(forward_primer, "t")
     }
     if (substr(gene, next_place, next_place) == "G" | substr(gene, next_place, next_place) == "g"){
       for_melt_temp <- for_melt_temp + 4
-      forward_primer <- paste0(forward_primer, "C")
+      forward_primer <- paste0(forward_primer, "g")
     }
     if (substr(gene, next_place, next_place) == "C" | substr(gene, next_place, next_place) == "c"){
       for_melt_temp <- for_melt_temp + 4
-      forward_primer <- paste0(forward_primer, "G")
+      forward_primer <- paste0(forward_primer, "c")
     }
     next_place <- next_place + 1
   }
 
-  #print(c("forward: ", forward_primer))
-  #print(nchar(forward_primer))
-  #print(for_melt_temp)
   for_melt_temp <- as.numeric(for_melt_temp)
   for_results <- data.frame(c(forward_primer = forward_primer, melt_temp = for_melt_temp, primer_length = nchar(forward_primer)))
   return(for_results)
 
 }
 
-#designs reverse primer, and increases length if melting temperature is too low
 reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_temp){
 
   reversed_gene <- paste(rev(substring(gene,1:nchar(gene),1:nchar(gene))),collapse="")
@@ -97,32 +77,21 @@ reverse_primer_design <- function(gene, primer_length, low_melt_temp, high_melt_
 
   reverse_temp <- as.character(proto_reverse_results[2,])
   proto_reverse_primer <- as.character(proto_reverse_results[1,])
-  correct_reverse_primer <- paste(rev(substring(proto_reverse_primer,1:nchar(proto_reverse_primer),1:nchar(proto_reverse_primer))),collapse="")
+
+  proto_reverse_primer_df <- as.data.frame(strsplit(proto_reverse_primer, split = ""))
+  reverse_primer <- ""
+
+  for (x in 1:nchar(proto_reverse_primer)) {
+    target_nuc <- proto_reverse_primer_df[x,]
+    comp_nuc <- complement(target_nuc)
+
+    reverse_primer <- paste0(reverse_primer, comp_nuc)
+  }
 
   reverse_temp <- as.numeric(reverse_temp)
-  rev_results <- data.frame(rbind(reverse_primer = as.character(correct_reverse_primer), melt_temp = reverse_temp, primer_length = nchar(correct_reverse_primer)))
+  rev_results <- data.frame(rbind(reverse_primer = as.character(reverse_primer), melt_temp = reverse_temp, primer_length = nchar(reverse_primer)))
   return(rev_results)
 }
 
-#applies forward and reverse primer functions to given gene
-both_primers_design <- function(gene, primer_length, low_melt_temp, high_melt_temp){
-  forward_results <- forward_primer_design(gene, primer_length, low_melt_temp, high_melt_temp)
-  reverse_results <- reverse_primer_design(gene, primer_length, low_melt_temp, high_melt_temp)
-
-  both_results <- cbind(forward_results, reverse_results)
-  row.names(both_results) <- c("primer", "melt_temp", "primer_length")
-  colnames(both_results) <- c("forward", "reverse")
-  return(both_results)
-}
-
-test_seq <- both_primers_design("atggctaggaagttcatggattggtggaatacagtaccagctgatatacgcaacaaagcaaagggcaacgatgattggacaaagtacaagccattactaaaccaagtaaactatgcaatggtagcactacacttgcaaggtaatcatagtgcaaagccttctgcagaggaactcttaagctggataaagaacggagagatagatgtagttagagttagtaagtaa
-                                ", 18, 55, 60)
+test_seq <- reverse_primer_design("atggctaggaagttcatggattggtggaatacagtaccagctgatatacgcaacaaagcaaagggcaacgatgattggacaaagtacaagccattactaaaccaagtaaactatgcaatggtagcactacacttgcaaggtaatcatagtgcaaagccttctgcagaggaactcttaagctggataaagaacggagagatagatgtagttagagttagtaagtaa", 18, 55, 60)
 test_seq
-
-install.packages("Biostrings")
-library("Biostrings")
-
-HL72 <- readDNAStringSet("~/Desktop/NyelHL72_v3.ORFs.faa")
-seq_name = names(fastaFile)
-sequence = paste(fastaFile)
-df <- data.frame(seq_name, sequence)
